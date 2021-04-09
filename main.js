@@ -121,7 +121,7 @@ function playerLose(name) {
 }
 
 function playerWin(name) {
-    const winText = name + ' win!'
+    const winText = name + ' wins!'
     return createEl('div', 'winTitle', winText)
 }
 
