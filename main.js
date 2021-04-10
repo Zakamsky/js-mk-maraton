@@ -100,19 +100,19 @@ function changeHP(player, count) {
     const $lifeBar = document.querySelector(`.player${player.player} .life`)
     const $hp = document.querySelector(`.player${player.player} .hp`)
     player.hp -= count
-    $lifeBar.style.width = player.hp + "%"
-    $hp.innerText = player.hp
 
-
-    if ( player.hp < 0 ) {
-        $lifeBar.style.width = 0
-        $hp.innerText = 0
+    if ( player.hp <= 0 ) {
+        player.hp = 0
+        // $lifeBar.style.width = 0
+        // $hp.innerText = 0
 
         const $message = player === player1 ? playerLose( 'you') : playerWin(player1.name)
         $arenas.appendChild( $message )
 
         $randBtn.disabled = true
     }
+    $lifeBar.style.width = player.hp + "%"
+    $hp.innerText = player.hp
 }
 
 function playerLose(name) {
@@ -131,7 +131,6 @@ function random(max, min = 0) {
     const num = max - min
     return Math.ceil(Math.random() * num ) + min
 }
-
 function createEl( tag, className, text ) {
     const $element = document.createElement(tag)
     className && $element.classList.add(className)
