@@ -49,37 +49,92 @@ const subZero = {
     },
 }
 
+const $arenas = document.querySelector('.arenas')
+const $randBtn = document.querySelector('.button')
 
-function createPlayer(classNames, character){
-    const { name, hp, img } = character
-    const $arenas = document.querySelector('.arenas')
-    const $player = createEl('div', classNames)
+let player1 = {
+    ...scorpion,
+    player: 1,
+}
+
+let player2 = {
+    ...subZero,
+    player: 2,
+}
+
+function createPlayer({ name, hp, img, player }){
+    // const { name, hp, img } = character
+
+    const $player = createEl('div', `player${player}`)
     const $progress = createEl('div', 'progressbar')
     const $live = createEl('div', 'life')
-    const $name = createEl('div', 'name')
+    const $hp = createEl('div', 'hp', hp)
+    const $name = createEl('div', 'name', name)
     const $character = createEl('div', 'character')
-    const $imgSrc = img
-    const $img = createImg($imgSrc, name)
+    const $img = createImg(img, name)
+
+    $live.style.width = hp + "%"
 
     $player.appendChild($progress)
     $progress.appendChild($live)
-    $live.style.width = "100%"
-    $live.innerText = hp
-    $name.innerText = name
+    $progress.appendChild($hp)
     $progress.appendChild($name)
     $player.appendChild($character)
     $character.appendChild($img)
-    $arenas.appendChild($player)
-    // return $player
+
+    return $player
 }
 
-createPlayer('player1', kitana )
-createPlayer('player2', subZero )
-// log(test, 'test')
 
-function createEl( tag, className ) {
+$arenas.appendChild(createPlayer( player1 ))
+$arenas.appendChild(createPlayer( player2 ))
+
+$randBtn.addEventListener('click', () => {
+    changeHP(player2, random(20, 5))
+    changeHP(player1, random(55, 15))
+})
+
+
+function changeHP(player, count) {
+
+    const $lifeBar = document.querySelector(`.player${player.player} .life`)
+    const $hp = document.querySelector(`.player${player.player} .hp`)
+    player.hp -= count
+
+    if ( player.hp <= 0 ) {
+        player.hp = 0
+        // $lifeBar.style.width = 0
+        // $hp.innerText = 0
+
+        const $message = player === player1 ? playerLose( 'you') : playerWin(player1.name)
+        $arenas.appendChild( $message )
+
+        $randBtn.disabled = true
+    }
+    $lifeBar.style.width = player.hp + "%"
+    $hp.innerText = player.hp
+}
+
+function playerLose(name) {
+    const LooseText = name + ' lose!'
+    return createEl('div', 'loseTitle', LooseText)
+}
+
+function playerWin(name) {
+    const winText = name + ' wins!'
+    return createEl('div', 'winTitle', winText)
+}
+
+
+
+function random(max, min = 0) {
+    const num = max - min
+    return Math.ceil(Math.random() * num ) + min
+}
+function createEl( tag, className, text ) {
     const $element = document.createElement(tag)
-    $element.classList.add(className)
+    className && $element.classList.add(className)
+    if (text) { $element.innerText = text }
     return $element
 }
 function createImg( src, alt = '', className ) {
@@ -90,7 +145,7 @@ function createImg( src, alt = '', className ) {
     return $element
 }
 // for debugging:
-
+// log(test, 'test')
 function log( log, name = '' ) {
     name += ''
     console.log('### ' + name + ':', log)
