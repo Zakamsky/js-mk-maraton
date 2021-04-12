@@ -1,6 +1,6 @@
 const scorpion = {
     name: 'scorpion',
-    hp: 80,
+    hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
     weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
     attack: function(){
@@ -10,7 +10,7 @@ const scorpion = {
 
 const kitana = {
     name: 'kitana',
-    hp: 76,
+    hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
     weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
     attack: function(){
@@ -20,7 +20,7 @@ const kitana = {
 
 const liukang = {
     name: 'liu kang',
-    hp: 76,
+    hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
     weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
     attack: function(){
@@ -28,10 +28,9 @@ const liukang = {
     },
 }
 
-
 const sonya = {
     name: 'sonya',
-    hp: 76,
+    hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/sonya.gif',
     weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
     attack: function(){
@@ -41,7 +40,7 @@ const sonya = {
 
 const subZero = {
     name: 'sub-zero',
-    hp: 76,
+    hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
     attack: function(){
@@ -51,19 +50,55 @@ const subZero = {
 
 const $arenas = document.querySelector('.arenas')
 const $randBtn = document.querySelector('.button')
+// const $control = document.querySelector('.control')
 
 let player1 = {
     ...scorpion,
     player: 1,
+    elHP: elHP,
+    elHPNum: elHPNum,
+    changeHP: changeHP,
+    renderHP: renderHP,
+
 }
 
 let player2 = {
     ...subZero,
     player: 2,
+    elHP: elHP,
+    elHPNum: elHPNum,
+    changeHP: changeHP,
+    renderHP: renderHP,
 }
 
+$arenas.appendChild(createPlayer( player1 ))
+$arenas.appendChild(createPlayer( player2 ))
+
+$randBtn.addEventListener('click', () => {
+    player2.changeHP(random(20, 5))
+    player1.changeHP(random(20, 5))
+    player2.renderHP()
+    player1.renderHP()
+
+    if (player1.hp === 0 || player2.hp === 0 ) {
+        let $message = ''
+        $randBtn.disabled = true
+        if ( player1.hp > player2.hp ) {
+            $message = playerWin(player1.name)
+        } else if ( player1.hp < player2.hp) {
+            $message = playerWin(player2.name)
+        } else {
+            $message = playerDraw()
+        }
+
+        $arenas.appendChild( $message )
+        $arenas.appendChild( createReloadButton() )
+
+    }
+})
+
+
 function createPlayer({ name, hp, img, player }){
-    // const { name, hp, img } = character
 
     const $player = createEl('div', `player${player}`)
     const $progress = createEl('div', 'progressbar')
@@ -85,39 +120,41 @@ function createPlayer({ name, hp, img, player }){
     return $player
 }
 
+// function changeHP(player, count) {
+//
+//     const $lifeBar = document.querySelector(`.player${player.player} .life`)
+//     const $hp = document.querySelector(`.player${player.player} .hp`)
+//     player.hp -= count
+//
+//     if ( player.hp <= 0 ) {
+//         player.hp = 0
+//     }
+//     $lifeBar.style.width = player.hp + "%"
+//     $hp.innerText = player.hp
+// }
 
-$arenas.appendChild(createPlayer( player1 ))
-$arenas.appendChild(createPlayer( player2 ))
-
-$randBtn.addEventListener('click', () => {
-    changeHP(player2, random(20, 5))
-    changeHP(player1, random(55, 15))
-})
-
-
-function changeHP(player, count) {
-
-    const $lifeBar = document.querySelector(`.player${player.player} .life`)
-    const $hp = document.querySelector(`.player${player.player} .hp`)
-    player.hp -= count
-
-    if ( player.hp <= 0 ) {
-        player.hp = 0
-        // $lifeBar.style.width = 0
-        // $hp.innerText = 0
-
-        const $message = player === player1 ? playerLose( 'you') : playerWin(player1.name)
-        $arenas.appendChild( $message )
-
-        $randBtn.disabled = true
+function changeHP(count) {
+    if (this.hp > count) {
+        return this.hp -= count
+    } else {
+        return this.hp = 0
     }
-    $lifeBar.style.width = player.hp + "%"
-    $hp.innerText = player.hp
 }
 
-function playerLose(name) {
-    const LooseText = name + ' lose!'
-    return createEl('div', 'loseTitle', LooseText)
+function elHP() {
+    return document.querySelector(`.player${this.player} .life`)
+}
+function elHPNum() {
+    return document.querySelector(`.player${this.player} .hp`)
+}
+function renderHP() {
+    this.elHP().style.width = this.hp + "%"
+    this.elHPNum().innerText = this.hp
+}
+
+function playerDraw() {
+
+    return createEl('div', 'loseTitle', 'draw')
 }
 
 function playerWin(name) {
@@ -125,7 +162,13 @@ function playerWin(name) {
     return createEl('div', 'winTitle', winText)
 }
 
-
+function createReloadButton() {
+    const $reloadWrap = createEl('div', 'reloadWrap')
+    const $reloadBtn = createEl('button', 'button', 'Restart')
+    $reloadWrap.appendChild($reloadBtn)
+    $reloadBtn.addEventListener('click', () => window.location.reload())
+    return $reloadWrap
+}
 
 function random(max, min = 0) {
     const num = max - min
