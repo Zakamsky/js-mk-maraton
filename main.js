@@ -49,40 +49,78 @@ const subZero = {
 }
 
 const $arenas = document.querySelector('.arenas')
-const $randBtn = document.querySelector('.button')
-// const $control = document.querySelector('.control')
+const $form = document.querySelector('.control')
+const $hitBtn = $form.querySelector('.button')
+
+const HIT = {
+    head: 30,
+    body: 25,
+    foot: 20,
+}
+const ATTACK = ['head', 'body', 'foot'];
 
 let player1 = {
     ...scorpion,
     player: 1,
-    elHP: elHP,
-    elHPNum: elHPNum,
-    changeHP: changeHP,
-    renderHP: renderHP,
+    elHP,
+    elHPNum,
+    changeHP,
+    renderHP,
 
 }
 
 let player2 = {
     ...subZero,
     player: 2,
-    elHP: elHP,
-    elHPNum: elHPNum,
-    changeHP: changeHP,
-    renderHP: renderHP,
+    elHP,
+    elHPNum,
+    changeHP,
+    renderHP,
 }
 
 $arenas.appendChild(createPlayer( player1 ))
 $arenas.appendChild(createPlayer( player2 ))
 
-$randBtn.addEventListener('click', () => {
-    player2.changeHP(random(20, 5))
-    player1.changeHP(random(20, 5))
-    player2.renderHP()
-    player1.renderHP()
+
+$form.addEventListener('submit', function(evt){
+    evt.preventDefault()
+    const enemy =  enemyAttack()
+    const player = {}
+
+    for( let input of $form) {
+        // log(input, 'input')
+        if ( input.checked && input.name === 'hit' ) {
+            player.hit = input.value
+        }
+        if ( input.checked && input.name === 'defence' ) {
+            player.defence = input.value
+        }
+    }
+    player.damage = random(HIT[player.hit], 5)
+    log(enemy, 'enemy')
+    log(player, 'player')
+
+    if ( enemy.hit !== player.defence) {
+        player1.changeHP( enemy.damage )
+        player1.renderHP()
+        console.log(`${player2.name} бьет ${player1.name} в ${enemy.hit} нанося - ${enemy.damage} урона!`)
+    } else if (enemy.hit === player.defence) {
+        console.log(`${player2.name} бьет ${player1.name} в ${enemy.hit} попадая в блок!`)
+    }
+
+    if ( player.hit !== enemy.defence) {
+        player2.changeHP( player.damage )
+        player2.renderHP()
+        console.log(`${player1.name} бьет ${player2.name} в ${player.hit} нанося - ${player.damage} урона!`)
+    } else if (player.hit === enemy.defence) {
+        console.log(`${player1.name} бьет ${player2.name} в ${player.hit} попадая в блок!`)
+    }
+
+    $form.reset()
 
     if (player1.hp === 0 || player2.hp === 0 ) {
         let $message = ''
-        $randBtn.disabled = true
+        $hitBtn.disabled = true
         if ( player1.hp > player2.hp ) {
             $message = playerWin(player1.name)
         } else if ( player1.hp < player2.hp) {
@@ -95,8 +133,18 @@ $randBtn.addEventListener('click', () => {
         $arenas.appendChild( createReloadButton() )
 
     }
+
 })
 
+
+function enemyAttack() {
+    const enemyAttack = {}
+    enemyAttack.hit = ATTACK[random(3) -1]
+    enemyAttack.defence = ATTACK[random(3) -1]
+    enemyAttack.damage = random(HIT[enemyAttack.hit], 5)
+
+    return enemyAttack
+}
 
 function createPlayer({ name, hp, img, player }){
 
@@ -120,19 +168,6 @@ function createPlayer({ name, hp, img, player }){
     return $player
 }
 
-// function changeHP(player, count) {
-//
-//     const $lifeBar = document.querySelector(`.player${player.player} .life`)
-//     const $hp = document.querySelector(`.player${player.player} .hp`)
-//     player.hp -= count
-//
-//     if ( player.hp <= 0 ) {
-//         player.hp = 0
-//     }
-//     $lifeBar.style.width = player.hp + "%"
-//     $hp.innerText = player.hp
-// }
-
 function changeHP(count) {
     if (this.hp > count) {
         return this.hp -= count
@@ -153,7 +188,6 @@ function renderHP() {
 }
 
 function playerDraw() {
-
     return createEl('div', 'loseTitle', 'draw')
 }
 
