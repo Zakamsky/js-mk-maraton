@@ -49,40 +49,58 @@ const subZero = {
 }
 
 const $arenas = document.querySelector('.arenas')
-const $randBtn = document.querySelector('.button')
-// const $control = document.querySelector('.control')
+const $form = document.querySelector('.control')
+const $hitBtn = $form.querySelector('.button')
+const $chat = document.querySelector('.chat')
+
+log($chat, 'chat')
+const HIT = {
+    head: 30,
+    body: 25,
+    foot: 20,
+}
+const ATTACK = ['head', 'body', 'foot'];
 
 let player1 = {
     ...scorpion,
     player: 1,
-    elHP: elHP,
-    elHPNum: elHPNum,
-    changeHP: changeHP,
-    renderHP: renderHP,
+    elHP,
+    elHPNum,
+    changeHP,
+    renderHP,
 
 }
 
 let player2 = {
     ...subZero,
     player: 2,
-    elHP: elHP,
-    elHPNum: elHPNum,
-    changeHP: changeHP,
-    renderHP: renderHP,
+    elHP,
+    elHPNum,
+    changeHP,
+    renderHP,
 }
 
 $arenas.appendChild(createPlayer( player1 ))
 $arenas.appendChild(createPlayer( player2 ))
 
-$randBtn.addEventListener('click', () => {
-    player2.changeHP(random(20, 5))
-    player1.changeHP(random(20, 5))
-    player2.renderHP()
-    player1.renderHP()
+
+$form.addEventListener('submit', function(evt){
+    evt.preventDefault()
+    const enemy =  enemyAttack()
+    const player = playerAttack($form)
+
+    // log(player, 'player')
+    attackAftermath(player2, player.hit, enemy.defence)
+    // log(enemy, 'enemy')
+    attackAftermath(player1, enemy.hit, player.defence)
+
+
+
+    $form.reset()
 
     if (player1.hp === 0 || player2.hp === 0 ) {
         let $message = ''
-        $randBtn.disabled = true
+        $hitBtn.disabled = true
         if ( player1.hp > player2.hp ) {
             $message = playerWin(player1.name)
         } else if ( player1.hp < player2.hp) {
@@ -95,8 +113,56 @@ $randBtn.addEventListener('click', () => {
         $arenas.appendChild( createReloadButton() )
 
     }
+
 })
 
+
+function attackAftermath(player, hit, defence) {
+    // const name = player.name
+    const aggressor = player.name === player1.name ?player2.name : player1.name
+    if ( hit !== defence) {
+        const damage = random(HIT[hit], 5)
+        player.changeHP( damage )
+        player.renderHP()
+        $chat.prepend(fightLog(aggressor, player.name, hit, damage))
+    } else {
+        $chat.prepend(fightLog(aggressor, player.name, hit))
+
+    }
+}
+
+function fightLog(aggressor, defender, hit,  damage) {
+    let str = ''
+    if ( damage ) {
+        str =  `${aggressor } бьет ${defender} в ${hit} нанося - ${damage} урона!`
+    } else {
+        str =  `${aggressor } бьет ${defender} в ${hit} попадая в блок!`
+    }
+
+    return createEl('p', 'log', str )
+}
+
+function enemyAttack() {
+    const enemyAttack = {}
+    enemyAttack.hit = ATTACK[random(3) -1]
+    enemyAttack.defence = ATTACK[random(3) -1]
+
+    return enemyAttack
+}
+
+function playerAttack(form) {
+    const player = {}
+    for( let input of form) {
+
+        if ( input.checked && input.name === 'hit' ) {
+            player.hit = input.value
+        }
+        if ( input.checked && input.name === 'defence' ) {
+            player.defence = input.value
+        }
+    }
+    return player
+}
 
 function createPlayer({ name, hp, img, player }){
 
@@ -120,19 +186,6 @@ function createPlayer({ name, hp, img, player }){
     return $player
 }
 
-// function changeHP(player, count) {
-//
-//     const $lifeBar = document.querySelector(`.player${player.player} .life`)
-//     const $hp = document.querySelector(`.player${player.player} .hp`)
-//     player.hp -= count
-//
-//     if ( player.hp <= 0 ) {
-//         player.hp = 0
-//     }
-//     $lifeBar.style.width = player.hp + "%"
-//     $hp.innerText = player.hp
-// }
-
 function changeHP(count) {
     if (this.hp > count) {
         return this.hp -= count
@@ -153,7 +206,6 @@ function renderHP() {
 }
 
 function playerDraw() {
-
     return createEl('div', 'loseTitle', 'draw')
 }
 
