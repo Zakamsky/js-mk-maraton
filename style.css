@@ -429,3 +429,12 @@ input[type=radio]:checked + label > span:hover {
     background-color: #caa600;
     color: #b8b8b8
 }
+
+.log{
+    color: #fff;
+    padding: 0 50px;
+}
+
+.chat{
+    overflow-y: auto;
+}

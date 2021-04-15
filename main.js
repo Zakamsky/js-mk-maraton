@@ -51,7 +51,9 @@ const subZero = {
 const $arenas = document.querySelector('.arenas')
 const $form = document.querySelector('.control')
 const $hitBtn = $form.querySelector('.button')
+const $chat = document.querySelector('.chat')
 
+log($chat, 'chat')
 const HIT = {
     head: 30,
     body: 25,
@@ -85,36 +87,14 @@ $arenas.appendChild(createPlayer( player2 ))
 $form.addEventListener('submit', function(evt){
     evt.preventDefault()
     const enemy =  enemyAttack()
-    const player = {}
+    const player = playerAttack($form)
 
-    for( let input of $form) {
-        // log(input, 'input')
-        if ( input.checked && input.name === 'hit' ) {
-            player.hit = input.value
-        }
-        if ( input.checked && input.name === 'defence' ) {
-            player.defence = input.value
-        }
-    }
-    player.damage = random(HIT[player.hit], 5)
-    log(enemy, 'enemy')
-    log(player, 'player')
+    // log(player, 'player')
+    attackAftermath(player2, player.hit, enemy.defence)
+    // log(enemy, 'enemy')
+    attackAftermath(player1, enemy.hit, player.defence)
 
-    if ( enemy.hit !== player.defence) {
-        player1.changeHP( enemy.damage )
-        player1.renderHP()
-        console.log(`${player2.name} бьет ${player1.name} в ${enemy.hit} нанося - ${enemy.damage} урона!`)
-    } else if (enemy.hit === player.defence) {
-        console.log(`${player2.name} бьет ${player1.name} в ${enemy.hit} попадая в блок!`)
-    }
 
-    if ( player.hit !== enemy.defence) {
-        player2.changeHP( player.damage )
-        player2.renderHP()
-        console.log(`${player1.name} бьет ${player2.name} в ${player.hit} нанося - ${player.damage} урона!`)
-    } else if (player.hit === enemy.defence) {
-        console.log(`${player1.name} бьет ${player2.name} в ${player.hit} попадая в блок!`)
-    }
 
     $form.reset()
 
@@ -137,13 +117,51 @@ $form.addEventListener('submit', function(evt){
 })
 
 
+function attackAftermath(player, hit, defence) {
+    // const name = player.name
+    const aggressor = player.name === player1.name ?player2.name : player1.name
+    if ( hit !== defence) {
+        const damage = random(HIT[hit], 5)
+        player.changeHP( damage )
+        player.renderHP()
+        $chat.prepend(fightLog(aggressor, player.name, hit, damage))
+    } else {
+        $chat.prepend(fightLog(aggressor, player.name, hit))
+
+    }
+}
+
+function fightLog(aggressor, defender, hit,  damage) {
+    let str = ''
+    if ( damage ) {
+        str =  `${aggressor } бьет ${defender} в ${hit} нанося - ${damage} урона!`
+    } else {
+        str =  `${aggressor } бьет ${defender} в ${hit} попадая в блок!`
+    }
+
+    return createEl('p', 'log', str )
+}
+
 function enemyAttack() {
     const enemyAttack = {}
     enemyAttack.hit = ATTACK[random(3) -1]
     enemyAttack.defence = ATTACK[random(3) -1]
-    enemyAttack.damage = random(HIT[enemyAttack.hit], 5)
 
     return enemyAttack
+}
+
+function playerAttack(form) {
+    const player = {}
+    for( let input of form) {
+
+        if ( input.checked && input.name === 'hit' ) {
+            player.hit = input.value
+        }
+        if ( input.checked && input.name === 'defence' ) {
+            player.defence = input.value
+        }
+    }
+    return player
 }
 
 function createPlayer({ name, hp, img, player }){
