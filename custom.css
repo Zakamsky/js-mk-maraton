@@ -1,0 +1,60 @@
+.hp {
+    position: absolute;
+    font-family: 'Mortal Kombat 3';
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 2px;
+    color: #efefef;
+    top: 0;
+    text-transform: uppercase;
+}
+
+.player2 .hp {
+    left: 5px;
+}
+.player1 .hp {
+    right: 5px;
+}
+
+.button[disabled] {
+    background-color: #caa600;
+    color: #b8b8b8
+}
+
+.log{
+    color: #fff;
+    padding: 0 50px;
+}
+
+.chat{
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.log{
+    transition: all 2s ease-in-out;
+    animation: .2s ease-in InSet;
+}
+.winTitle,
+.loseTitle {
+    position: absolute;
+    top: 22%;
+    left: 50%;
+    font-size: 36px;
+    transform: translate(-50%, 0%);
+    text-transform: uppercase;
+    z-index: 1000;
+    color: white;
+    font-family: "Mortal Kombat 3";
+    text-shadow: 2px 2px 2px #cd0e03;
+}
+
+@keyframes InSet {
+    from{
+        opacity: 0;
+        transform: scale(1.3) translateY(-100%);
+    }
+    to{
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
