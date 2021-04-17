@@ -181,9 +181,7 @@ $form.addEventListener('submit', function(evt){
     const player = playerAttack($form)
 
     attackAftermath(player2, player.hit, enemy.defence)
-    setTimeout( ()=> attackAftermath(player1, enemy.hit, player.defence), 400)
-
-
+    attackAftermath(player1, enemy.hit, player.defence)
 
     $form.reset()
 
@@ -249,8 +247,6 @@ function fightLog(logType, playerKick, playerDefence, hit, hp, damage) {
     const el = `<p class="log">${logStr}</p>`
 
     $chat.insertAdjacentHTML('afterbegin', el)
-    //
-    // return createEl('p', 'log', logStr )
 }
 
 function enemyAttack() {
@@ -350,6 +346,7 @@ function createImg( src, alt = '', className ) {
     className && $element.classList.add(className)
     return $element
 }
+
 // for debugging:
 // log(test, 'test')
 function log( log, name = '' ) {
