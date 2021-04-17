@@ -181,7 +181,7 @@ $form.addEventListener('submit', function(evt){
     const player = playerAttack($form)
 
     attackAftermath(player2, player.hit, enemy.defence)
-    setTimeout( ()=> attackAftermath(player1, enemy.hit, player.defence), 400)
+    attackAftermath(player1, enemy.hit, player.defence)
 
 
 
