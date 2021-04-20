@@ -158,7 +158,6 @@ let player1 = {
     elHPNum,
     changeHP,
     renderHP,
-
 }
 
 let player2 = {
@@ -182,8 +181,6 @@ $form.addEventListener('submit', function(evt){
 
     attackAftermath(player2, player.hit, enemy.defence)
     attackAftermath(player1, enemy.hit, player.defence)
-
-
 
     $form.reset()
 
@@ -211,9 +208,10 @@ $form.addEventListener('submit', function(evt){
 
 function attackAftermath(player, hit, defence) {
     // const name = player.name
-    const aggressor = player.name === player1.name ?player2.name : player1.name
+    const aggressor = player.name === player1.name ? player2.name : player1.name
     if ( hit !== defence) {
         const damage = random(HIT[hit], 5)
+        // const damage = 100
         player.changeHP( damage )
         player.renderHP()
         fightLog('hit', aggressor, player.name, hit, player.hp, damage)
@@ -224,10 +222,13 @@ function attackAftermath(player, hit, defence) {
 }
 
 function fightLog(logType, playerKick, playerDefence, hit, hp, damage) {
-    const time = new Date().getHours() + ':'+ new Date().getMinutes()
+    const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
 
-    let str = logs[logType][random(logs[logType].length - 1)].replace('[playerKick]', playerKick).replace('[playerDefence]', playerDefence)
     let logStr = ''
+    let str = ''
+    if (logs[logType].length) {
+        str = logs[logType][random(logs[logType].length - 1)].replace('[playerKick]', playerKick).replace('[playerDefence]', playerDefence)
+    }
 
     switch (logType) {
         case 'hit':
@@ -239,11 +240,12 @@ function fightLog(logType, playerKick, playerDefence, hit, hp, damage) {
         case 'end':
             logStr = str.replace('[time]', time)
             break
-        case 'draw':
-            logStr = logs[logType]
-            break
-        default:
+        case 'start':
             logStr = logs[logType].replace('[time]', time).replace('[playerKick]', playerKick).replace('[playerDefence]', playerDefence)
+            break
+        case 'draw':
+            logStr = logs['draw']
+            break
     }
 
     const el = `<p class="log">${logStr}</p>`
