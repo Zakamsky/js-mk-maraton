@@ -1,5 +1,5 @@
-import { random, createEl, createImg, log } from './utils.js'
-import { attackAftermath, fightLog, enemyAttack, playerAttack, createPlayer, playerDraw, playerWin, createReloadButton, isGameOver } from "./game.js"
+import { random } from './utils.js'
+import { attackAftermath, fightLog, enemyAttack, playerAttack, createPlayer, isGameOver } from "./game.js"
 import { logs } from './logs.js'
 import { characters } from "./characters.js"
 import Player from './player.js'
