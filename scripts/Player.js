@@ -1,6 +1,5 @@
 import {createEl, createImg} from "./utils.js";
 
-
 class Selectors{
     constructor(player){
         this.elHP = () => document.querySelector(`.player${player} .life`)

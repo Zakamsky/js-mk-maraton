@@ -17,7 +17,7 @@ export default class Game extends Arena {
             player: 2
         })
         this.HIT = {
-            head: 130,
+            head: 30,
             body: 25,
             foot: 20,
         }
