@@ -2,7 +2,7 @@ export const characters = [
     {
         name: 'scorpion',
         hp: 100,
-        img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
+        img: 'https://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
         weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
         attack: function(){
             console.log(this.name + ' Fight...')
@@ -11,7 +11,7 @@ export const characters = [
     {
         name: 'kitana',
         hp: 100,
-        img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
+        img: 'https://reactmarathon-api.herokuapp.com/assets/kitana.gif',
         weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
         attack: function(){
             console.log(this.name + ' Fight...')
@@ -20,7 +20,7 @@ export const characters = [
     {
         name: 'liu kang',
         hp: 100,
-        img: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
+        img: 'https://reactmarathon-api.herokuapp.com/assets/liukang.gif',
         weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
         attack: function(){
             console.log(this.name + ' Fight...')
@@ -29,7 +29,7 @@ export const characters = [
     {
         name: 'sonya',
         hp: 100,
-        img: 'http://reactmarathon-api.herokuapp.com/assets/sonya.gif',
+        img: 'https://reactmarathon-api.herokuapp.com/assets/sonya.gif',
         weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
         attack: function(){
             console.log(this.name + ' Fight...')
@@ -38,7 +38,7 @@ export const characters = [
     {
         name: 'sub-zero',
         hp: 100,
-        img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
+        img: 'https://reactmarathon-api.herokuapp.com/assets/subzero.gif',
         weapon: [ 'low punch', 'high punch', 'low kick', 'high kick', 'sword', ],
         attack: function(){
             console.log(this.name + ' Fight...')
