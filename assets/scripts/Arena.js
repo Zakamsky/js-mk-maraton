@@ -7,7 +7,7 @@ export default class Arena {
         const $reloadWrap = createEl('div', 'reloadWrap')
         const $reloadBtn = createEl('button', 'button', 'Restart')
         $reloadWrap.appendChild($reloadBtn)
-        $reloadBtn.addEventListener('click', () => window.location.reload())
+        $reloadBtn.addEventListener('click', () => window.location.pathname = '/')
         return $reloadWrap
     }
 

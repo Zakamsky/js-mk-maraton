@@ -2,20 +2,11 @@ import {createEl, log, random} from "./utils.js"
 import Logs from "./Logs.js"
 import Player from "./Player.js"
 import Arena from "./Arena.js"
-import {characters} from "./characters.js"
+import {servFetch} from "./ServerFetch.js";
 
 export default class Game extends Arena {
     constructor(){
         super()
-        this.player1 = new Player({
-            ...characters[random( characters.length ) - 1],
-            player: 1
-        })
-
-        this.player2 = new Player({
-            ...characters[random( characters.length ) - 1],
-            player: 2
-        })
         this.HIT = {
             head: 30,
             body: 25,
@@ -24,17 +15,40 @@ export default class Game extends Arena {
         this.ATTACK = ['head', 'body', 'foot'];
         this.logs = new Logs()
     }
+    getPlayers = async () => {
+        const randPlayer = await servFetch.getRandomPlayers()
+        log(randPlayer, 'randPlayer')
 
-    start = () => {
+        this.player1 = new Player({
+            ...JSON.parse(localStorage.getItem('player1')),
+            player: 1
+        })
+
+        this.player2 = new Player({
+            ...randPlayer,
+            player: 2
+        })
+    }
+
+    start = async () => {
+        await this.getPlayers()
         this.formListener()
         this.logs.fightLog('start', this.player1.name, this.player2.name)
     }
 
-    formListener = ($form) => {
-        this.$form.addEventListener('submit', (evt) => {
+    formListener =  async () => {
+        this.$form.addEventListener('submit',  async (evt) => {
             evt.preventDefault()
-            const enemy =  this.enemyAttack()
-            const player = this.playerAttack(this.$form)
+
+            const playerChoice = this.playerAttack(this.$form)
+            log(playerChoice, 'playerChoice')
+
+            const combatData = await servFetch.getAttack(playerChoice)
+            log(combatData, 'combatData')
+            const {player1: player, player2: enemy} = combatData
+            log(player, 'player')
+            log(enemy, 'enemy')
+
 
             this.attackAftermath(this.player2, this.player1.name, player.hit, enemy.defence)
             this.attackAftermath(this.player1, this.player2.name, enemy.hit, player.defence)
@@ -58,13 +72,13 @@ export default class Game extends Arena {
         }
     }
 
-    enemyAttack = () => {
-        const enemyAttack = {}
-        enemyAttack.hit = this.ATTACK[random(3) -1]
-        enemyAttack.defence = this.ATTACK[random(3) -1]
-
-        return enemyAttack
-    }
+    // enemyAttack = () => {
+    //     const enemyAttack = {}
+    //     enemyAttack.hit = this.ATTACK[random(3) -1]
+    //     enemyAttack.defence = this.ATTACK[random(3) -1]
+    //
+    //     return enemyAttack
+    // }
 
     playerAttack = (form) => {
         const player = {}
